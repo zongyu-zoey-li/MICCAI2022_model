@@ -13,7 +13,7 @@ import utils
 
 import pdb
 import pandas as pd
-LOCS_JIGSAWS = [1,2,3,13,14,15,19,39,40,41,51,52,53,57] # column index
+LOCS_JIGSAWS = [1,2,3,...] # column index
 # For: raw feature
 class RawFeatureDataset(Dataset):
     def __init__(self, dataset_name,
