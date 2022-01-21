@@ -10,7 +10,6 @@ model
  ┃ ┃ ┃ ┃ ┗ train_test_result.csv
  ┃ ┃ ┃ ┣ checkpoint_0.pth
  ┃ ┃ ┣ test_2...
-
  ┣ Knot_Tying
  ┃ ┣ kin_ges
  ┃ ┃ ┣ Knot_Tying_B001.txt ... [contains the kinematics columns +'Y' (categorical values of the gestures)]
@@ -31,8 +30,7 @@ model
  ┣ parameter_tuning.py (use this code to perform parameter tuning)
  ┣ requirements.txt
  ┣ tcn_model.py
- ┣ train_test_cross.py
- ┣ try.ipynb
+ ┣ train_test_cross.py (use this code to perform cross validation)
  ┗ utils.py
  ```
 ## setting up the environment 
