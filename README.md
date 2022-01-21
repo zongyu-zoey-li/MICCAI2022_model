@@ -43,7 +43,6 @@ model
 ```
         "input_size": 14,---feature size
         "gesture_class_num":14,---unique classes
-        "split_num":8,# need to be removed
         "validation_trial":1, -- for parameter tuning train on [2,3,4,5], validation on trial 1
         "test_trial":[1,2,3,4,5],---for cross validation test set
         "train_trial":[[2,3,4,5],[1,3,4,5],[1,2,4,5],[1,2,3,5],[1,2,3,4]], ---for cross validation train set
@@ -53,3 +52,18 @@ model
                 "class_num":14, ---need to be changed to be same as gesture_class_num
         
 ```
+
+## parameter tuning
+to find the learning rate & weight decay
+```
+config = {"learning_rate":tune.loguniform(1e-5,1e-3), "batch_size":1, "weight_decay": tune.loguniform(1e-4,1e-2)}
+
+```
+ to find the appropriate epochs
+```
+main_tcn(num_samples=1, max_num_epochs=60) with fixed config eg. onfig = {'learning_rate': 0.0003042861945575232, 'batch_size': 1, 'weight_decay': 0.00012035748692105724} 
+```
+can use the tensorboard to visualize (the tuning result is saved by default at the home directory called ray-tune.Then use the tensorboard command to visual the trainig curve) tensorboard --logdir='/your/path/here'
+
+## cross validation
+run the train_test_cross.py code and run the calculate_mean_cv to get the mean values
