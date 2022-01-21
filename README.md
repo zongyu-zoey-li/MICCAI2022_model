@@ -37,4 +37,20 @@ model
 ## setting up the environment 
 * install anaconda 
 * run  conda install --file requirements.txt
-## 
+## data preparation
+* use/ modifiy the code in the dataprep_code to create the datasets under kin_ges. This code assigns each time step a corresponding gesture from the transcription dataset.
+* change directories in the json file
+```
+        "input_size": 14,---feature size
+        "gesture_class_num":14,---unique classes
+        "split_num":8,# need to be removed
+        "validation_trial":1, -- for parameter tuning train on [2,3,4,5], validation on trial 1
+        "test_trial":[1,2,3,4,5],---for cross validation test set
+        "train_trial":[[2,3,4,5],[1,3,4,5],[1,2,4,5],[1,2,3,5],[1,2,3,4]], ---for cross validation train set
+        "raw_feature_dir":["/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/Needle_Passing/kin_ges","/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/Suturing/kin_ges","/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/Knot_Tying/kin_ges"],
+        "tcn_log_dir":"./JIGSAWS/log",  no change
+        "tcn_model_dir":"./JIGSAWS/model", no change
+        "tcn_feature_dir":"./JIGSAWS/features", no change
+        "result_dir":"./result/JIGSAWS",no change
+        
+```
