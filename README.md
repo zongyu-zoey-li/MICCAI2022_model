@@ -40,7 +40,7 @@ model
 * run  conda install --file requirements.txt
 ## data preparation
 * use/ modifiy the code in the dataprep_code to create the datasets under kin_ges. This code assigns each time step a corresponding gesture from the transcription dataset.
-* change the column index in data_loading.py
+* change the column index in data_loading.py LOCS_JIGSAWS=
 * change directories in the json file
 ```
         "input_size": 14,---feature size
