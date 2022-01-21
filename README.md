@@ -4,11 +4,13 @@
 ```
 model
  ┣ JIGSAWS
- ┃ ┣ tcn
+ ┃ ┣ tcn  (This folder save the cross validation result test_1 means trainig on the rest while test on trial 1)
  ┃ ┃ ┣ test_1
  ┃ ┃ ┃ ┣ log
  ┃ ┃ ┃ ┃ ┗ train_test_result.csv
  ┃ ┃ ┃ ┣ checkpoint_0.pth
+ ┃ ┃ ┣ test_2...
+
  ┣ Knot_Tying
  ┃ ┣ kin_ges
  ┃ ┃ ┣ Knot_Tying_B001.txt ... [contains the kinematics columns +'Y' (categorical values of the gestures)]
