@@ -58,14 +58,14 @@ model
 ```
 
 ## parameter tuning
-to find the learning rate & weight decay
+to find the learning rate & weight decay with the parameter_tuning.py
 ```
 config = {"learning_rate":tune.loguniform(1e-5,1e-3), "batch_size":1, "weight_decay": tune.loguniform(1e-4,1e-2)}
 
 ```
  to find the appropriate epochs
 ```
-main_tcn(num_samples=1, max_num_epochs=60) with fixed config eg. onfig = {'learning_rate': 0.0003042861945575232, 'batch_size': 1, 'weight_decay': 0.00012035748692105724} 
+main_tcn(num_samples=1, max_num_epochs=60) with fixed config eg. config = {'learning_rate': 0.0003042861945575232, 'batch_size': 1, 'weight_decay': 0.00012035748692105724} 
 ```
 can use the tensorboard to visualize (the tuning result is saved by default at the home directory called ray-tune.Then use the tensorboard command to visual the trainig curve) tensorboard --logdir='/your/path/here'
 
