@@ -26,7 +26,6 @@ model
  ┣ dataprep_code.py
  ┣ get_festure.py
  ┣ logger.py
- ┣ lstm_model.py
  ┣ parameter_tuning.py (use this code to perform parameter tuning)
  ┣ requirements.txt
  ┣ tcn_model.py
