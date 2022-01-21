@@ -48,9 +48,8 @@ model
         "test_trial":[1,2,3,4,5],---for cross validation test set
         "train_trial":[[2,3,4,5],[1,3,4,5],[1,2,4,5],[1,2,3,5],[1,2,3,4]], ---for cross validation train set
         "raw_feature_dir":["/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/Needle_Passing/kin_ges","/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/Suturing/kin_ges","/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/Knot_Tying/kin_ges"],
-        "tcn_log_dir":"./JIGSAWS/log",  no change
-        "tcn_model_dir":"./JIGSAWS/model", no change
-        "tcn_feature_dir":"./JIGSAWS/features", no change
-        "result_dir":"./result/JIGSAWS",no change
+ "tcn_params":{
+            "model_params":{
+                "class_num":14, ---need to be changed to be same as gesture_class_num
         
 ```
