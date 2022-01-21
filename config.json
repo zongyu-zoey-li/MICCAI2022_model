@@ -6,7 +6,6 @@
     "JIGSAWS":{
         "input_size": 14,
         "gesture_class_num":14,
-        "split_num":8,
         "validation_trial":1,
         "test_trial":[1,2,3,4,5],
         "train_trial":[[2,3,4,5],[1,3,4,5],[1,2,4,5],[1,2,3,5],[1,2,3,4]],
