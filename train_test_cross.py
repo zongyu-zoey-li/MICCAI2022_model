@@ -18,7 +18,7 @@ from config import (raw_feature_dir, sample_rate,
                     gesture_class_num, dataset_name)
 
 
-# for parameter tuning LSTM
+# for parameter tuning LSTM/TCN
 
 from config import input_size, num_class, raw_feature_dir, validation_trial, validation_trial_train, tcn_model_params 
 from utils import get_cross_val_splits
@@ -26,9 +26,9 @@ import ray
 from ray import tune
 from tcn_model import EncoderDecoderNet
 
-config = { "hidden_size":tune.sample_from(lambda _: 2**np.random.randint(3,9)), "num_layers":tune.choice([1,2,3,4]),
-    "learning_rate":tune.loguniform(1e-5,1e-2),
-        "batch_size":1, "weight_decay": tune.loguniform(1e-3,1e-1)}
+#config = { "hidden_size":tune.sample_from(lambda _: 2**np.random.randint(3,9)), "num_layers":tune.choice([1,2,3,4]),
+    #"learning_rate":tune.loguniform(1e-5,1e-2),
+       # "batch_size":1, "weight_decay": tune.loguniform(1e-3,1e-1)}
 def train_model_parameter( config, type,input_size, num_class,num_epochs,dataset_name,sample_rate,
                 loss_weights=None, 
                 trained_model_file=None, 
