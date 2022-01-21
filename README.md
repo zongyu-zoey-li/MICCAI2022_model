@@ -35,6 +35,8 @@ model
  ```
 ## setting up the environment 
 * install anaconda 
+* conda create --name myenv
+* conda activate myenv
 * run  conda install --file requirements.txt
 ## data preparation
 * use/ modifiy the code in the dataprep_code to create the datasets under kin_ges. This code assigns each time step a corresponding gesture from the transcription dataset.
