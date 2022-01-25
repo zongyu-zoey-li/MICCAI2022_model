@@ -56,6 +56,7 @@ model
                 "class_num":14, ---need to be changed to be same as gesture_class_num
         
 ```
+* check the config.py to see everything is correct
 
 ## parameter tuning
 to find the learning rate & weight decay with the parameter_tuning.py
