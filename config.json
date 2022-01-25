@@ -4,6 +4,7 @@
     },
     "dataset_name":"JIGSAWS",
     "JIGSAWS":{
+        "sample_rate":1,
         "input_size": 14,
         "gesture_class_num":14,
         "validation_trial":1,
