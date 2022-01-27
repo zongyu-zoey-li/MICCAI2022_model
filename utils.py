@@ -1,5 +1,6 @@
 from __future__ import division
 from __future__ import print_function
+from curses import raw
 
 import os
 import torch
@@ -47,7 +48,18 @@ def get_cross_val_splits(validation = False):
         cross_val_splits=[]
         test_dir = []
         train_dir = []
-        for i in raw_feature_dir:
+        if len(raw_feature_dir)!=1:
+            for i in raw_feature_dir:
+                print(os.path.join(i,'*{}.*'.format(validation_trial)))
+                test = glob.glob(os.path.join(i,'*{}.*'.format(validation_trial)))
+                test_dir.extend(test)
+                train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(validation_trial_train[0],\
+                    validation_trial_train[1],validation_trial_train[2],validation_trial_train[3])))
+                train_dir.extend(train)
+        
+            return {'train':train_dir,'test':test_dir,'name':'tune'}
+        else:
+            i = raw_feature_dir[0]
             print(os.path.join(i,'*{}.*'.format(validation_trial)))
             test = glob.glob(os.path.join(i,'*{}.*'.format(validation_trial)))
             test_dir.extend(test)
@@ -55,14 +67,26 @@ def get_cross_val_splits(validation = False):
                 validation_trial_train[1],validation_trial_train[2],validation_trial_train[3])))
             train_dir.extend(train)
     
-        return {'train':train_dir,'test':test_dir,'name':'tune'}
+            return {'train':train_dir,'test':test_dir,'name':'tune'}
 
     else:
         cross_val_splits = []
         for idx, test_num in enumerate(test_trial):
             train_dir = []
             test_dir = []
-            for i in raw_feature_dir:
+            if len(raw_feature_dir)!=1:
+                for i in raw_feature_dir:
+                    test = glob.glob(os.path.join(i,'*{}.*'.format(test_num)))
+                    test_dir.extend(test)
+                    #breakpoint()
+                    train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
+                        train_trial[idx][2],train_trial[idx][3])))
+                    print(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
+                        train_trial[idx][2],train_trial[idx][3])))
+
+                    train_dir.extend(train)
+            else:
+                i = raw_feature_dir[0]
                 test = glob.glob(os.path.join(i,'*{}.*'.format(test_num)))
                 test_dir.extend(test)
                 #breakpoint()
