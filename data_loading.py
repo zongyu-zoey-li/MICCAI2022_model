@@ -8,12 +8,15 @@ import os
 import torch
 import pickle
 import sklearn.preprocessing
+from config import LOCS
+from config import data_transform_path
 
 import utils
 
 import pdb
 import pandas as pd
-LOCS_JIGSAWS = [1,2,3,...] # column index
+LOCS_JIGSAWS = LOCS
+# column index L psm , R psm JIGSAWS
 # For: raw feature
 class RawFeatureDataset(Dataset):
     def __init__(self, dataset_name,
@@ -42,9 +45,9 @@ class RawFeatureDataset(Dataset):
             trail_name = self.trail_list[idx]
             #breakpoint()
 
-            if dataset_name in ['JIGSAWS', 'JIGSAWS_K', 'JIGSAWS_N']:
+            if dataset_name in ['JIGSAWS', 'DESKpegtransfer']:
                 data_file = trail_name
-                with open('/home/aurora/Documents/MICCAI2022_baseline/LSTM_model/JIGSAWS-TRANSFORM.pkl','rb') as f:
+                with open(data_transform_path,'rb') as f:
                     label_transform =  pickle.load(f)
                 
                 #print(data_file)
@@ -55,13 +58,14 @@ class RawFeatureDataset(Dataset):
             else:
                 raise Exception('Invalid Dataset Name!') 
             
-            trail_data = pd.read_csv(data_file)
+            trail_data = pd.read_csv(data_file,sep=',')
             
-            colv = [i for i in range(1,77)]
-            colv.append('Y')
-            trail_data.columns=colv
+            #colv = [i for i in range(1,77)]
+            #colv.append('Y')
+            #trail_data.columns=colv
             
             #scipy.io.loadmat(data_file)
+            #breakpoint()
 
             if feature_type == 'visual':
                 trail_feature = trail_data['A']
