@@ -53,8 +53,13 @@ def get_cross_val_splits(validation = False):
                 print(os.path.join(i,'*{}.*'.format(validation_trial)))
                 test = glob.glob(os.path.join(i,'*{}.*'.format(validation_trial)))
                 test_dir.extend(test)
-                train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(validation_trial_train[0],\
-                    validation_trial_train[1],validation_trial_train[2],validation_trial_train[3])))
+                tri=[j for j in validation_trial_train]
+                a = "*["+",".join(['{}']*len(validation_trial_train))+"].*"
+                train = glob.glob(os.path.join(i,a.format(*tri)))
+                    #train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
+                     #   train_trial[idx][2],train_trial[idx][3])))
+
+                print(os.path.join(i,a.format(*tri)))
                 train_dir.extend(train)
         
             return {'train':train_dir,'test':test_dir,'name':'tune'}
@@ -63,8 +68,13 @@ def get_cross_val_splits(validation = False):
             print(os.path.join(i,'*{}.*'.format(validation_trial)))
             test = glob.glob(os.path.join(i,'*{}.*'.format(validation_trial)))
             test_dir.extend(test)
-            train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(validation_trial_train[0],\
-                validation_trial_train[1],validation_trial_train[2],validation_trial_train[3])))
+            tri=[j for j in validation_trial_train]
+            a = "*["+",".join(['{}']*len(validation_trial_train))+"].*"
+            train = glob.glob(os.path.join(i,a.format(*tri)))
+                    #train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
+                     #   train_trial[idx][2],train_trial[idx][3])))
+            print(os.path.join(i,a.format(*tri)))
+            #breakpoint()
             train_dir.extend(train)
     
             return {'train':train_dir,'test':test_dir,'name':'tune'}
@@ -79,10 +89,12 @@ def get_cross_val_splits(validation = False):
                     test = glob.glob(os.path.join(i,'*{}.*'.format(test_num)))
                     test_dir.extend(test)
                     #breakpoint()
-                    train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
-                        train_trial[idx][2],train_trial[idx][3])))
-                    print(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
-                        train_trial[idx][2],train_trial[idx][3])))
+                    tri=[j for j in train_trial[idx]]
+                    a = "*["+",".join(['{}']*len(train_trial[idx]))+"].*"
+                    train = glob.glob(os.path.join(i,a.format(*tri)))
+                    #train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
+                     #   train_trial[idx][2],train_trial[idx][3])))
+                    print(os.path.join(i,a.format(*tri)))
 
                     train_dir.extend(train)
             else:
@@ -90,10 +102,13 @@ def get_cross_val_splits(validation = False):
                 test = glob.glob(os.path.join(i,'*{}.*'.format(test_num)))
                 test_dir.extend(test)
                 #breakpoint()
-                train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
-                    train_trial[idx][2],train_trial[idx][3])))
-                print(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],\
-                    train_trial[idx][2],train_trial[idx][3])))
+                tri=[j for j in train_trial[idx]]
+                a = "*["+",".join(['{}']*len(train_trial[idx]))+"].*"
+                train = glob.glob(os.path.join(i,a.format(*tri)))
+                    #train = glob.glob(os.path.join(i,'*[{},{},{},{}].*'.format(train_trial[idx][0],train_trial[idx][1],train_trial[idx][2],train_trial[idx][3])))
+                     #   
+                print(os.path.join(i,a.format(*tri)))
+                #breakpoint()
 
                 train_dir.extend(train)
                 
