@@ -94,7 +94,7 @@ class RawFeatureDataset(Dataset):
             self.marks.append([start_index, start_index + trail_len])
             start_index += trail_len
 
-
+        #breakpoint()
         self.all_feature = np.concatenate(self.all_feature)
         self.all_gesture = np.concatenate(self.all_gesture)
         
