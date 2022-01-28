@@ -3,7 +3,7 @@
         "sample_rate":1
      
     },
-    "dataset_name":"DESKpegtransfer",
+    "dataset_name":"JIGSAWS",
     "DESKpegtransfer":{
         "sample_rate":1,
         "input_size": 14,
@@ -20,6 +20,9 @@
              "PSM1_velocity_z", "PSM2_velocity_x", "PSM2_velocity_y",
              "PSM2_velocity_z"],
         "tcn_params":{
+            "config":{"epoch":150,
+                "learning_rate": 0.0009814991496677643, "batch_size": 1, "weight_decay": 0.009702430951493164},
+
             "model_params":{
                 "class_num":7,
                 "fc_size":32,
@@ -72,9 +75,9 @@
            ,"PSMR_velocity_x","PSMR_velocity_y","PSMR_velocity_z","PSMR_gripper_angle"],
         "tcn_params":{
             "config":{"num_epochs" :30,
-                "learning_rate": 0.0003042861945575232, 
+                "learning_rate": 0.00027347155281573553, 
                 "batch_size": 1, 
-                "weight_decay": 0.00012035748692105724},
+                "weight_decay": 0.00037328332914909917},
             "model_params":{
                 "class_num":14,
                 "fc_size":32,
