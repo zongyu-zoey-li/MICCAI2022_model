@@ -176,7 +176,7 @@ def train_model_parameter( config, type,input_size, num_class,num_epochs,dataset
 def train_model(config,type,train_dataset,val_dataset,input_size, num_class,num_epochs,
                 loss_weights=None, 
                 trained_model_file=None, 
-                log_dir=None, checkpoint_dir=None):
+                log_dir=None, checkpoint_dir=None,model_index=0):
 
     if type =='lstm':
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -188,9 +188,17 @@ def train_model(config,type,train_dataset,val_dataset,input_size, num_class,num_
         model = model.to(device)
     
     
-    df = pd.DataFrame(index=np.arange(0,num_epochs),  columns=('t_accuracy','t_edit_score','t_loss','t_f_scores_10','t_f_scores_25','t_f_scores_50','t_f_scores_75',\
+    if model_index==5:
+        df1 = pd.DataFrame(index=np.arange(0,num_epochs),  columns=('t_accuracy','t_edit_score','t_loss','t_f_scores_10','t_f_scores_25','t_f_scores_50','t_f_scores_75',\
     'v_accuracy','v_edit_score','v_loss','v_f_scores_10','v_f_scores_25','v_f_scores_50','v_f_scores_75'))
-        #breakpoint()
+        df2 = pd.DataFrame(index=np.arange(0,num_epochs),  columns=('t_accuracy','t_edit_score','t_loss','t_f_scores_10','t_f_scores_25','t_f_scores_50','t_f_scores_75',\
+    'v_accuracy','v_edit_score','v_loss','v_f_scores_10','v_f_scores_25','v_f_scores_50','v_f_scores_75'))#breakpoint()
+        df = [df1, df2]
+    else:
+        df = pd.DataFrame(index=np.arange(0,num_epochs),  columns=('t_accuracy','t_edit_score','t_loss','t_f_scores_10','t_f_scores_25','t_f_scores_50','t_f_scores_75',\
+    'v_accuracy','v_edit_score','v_loss','v_f_scores_10','v_f_scores_25','v_f_scores_50','v_f_scores_75'))
+      
+       
     loss_weights = utils.get_class_weights(train_dataset)
     train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                     batch_size=config["batch_size"], shuffle=True)
@@ -267,11 +275,21 @@ def train_model(config,type,train_dataset,val_dataset,input_size, num_class,num_
             train_result = test_model(model, train_dataset, loss_weights)
             t_accuracy, t_edit_score, t_loss, t_f_scores = train_result
 
-            val_result = test_model(model, val_dataset, loss_weights)
-            v_accuracy, v_edit_score, v_loss, v_f_scores = val_result
-            df.loc[epoch] = [t_accuracy, t_edit_score,t_loss, t_f_scores[0], t_f_scores[1], t_f_scores[2], t_f_scores[3],\
-                v_accuracy, v_edit_score,v_loss, v_f_scores[0], v_f_scores[1], v_f_scores[2], v_f_scores[3]]
-    df.to_csv(os.path.join(log_dir,'train_test_result.csv'))
+            if model_index==5:
+                for table_idx, val in enumerate(val_dataset):
+                    val_result = test_model(model, val, loss_weights)
+                    v_accuracy, v_edit_score, v_loss, v_f_scores = val_result
+                    df[table_idx].loc[epoch] = [t_accuracy, t_edit_score,t_loss, t_f_scores[0], t_f_scores[1], t_f_scores[2], t_f_scores[3],\
+                    v_accuracy, v_edit_score,v_loss, v_f_scores[0], v_f_scores[1], v_f_scores[2], v_f_scores[3]]
+                df[0].to_csv(os.path.join(log_dir,'train_test_result_JIGSAWS.csv'))
+                df[1].to_csv(os.path.join(log_dir,'train_test_result_DESK.csv'))
+
+            else:
+                val_result = test_model(model, val_dataset, loss_weights)
+                v_accuracy, v_edit_score, v_loss, v_f_scores = val_result
+                df.loc[epoch] = [t_accuracy, t_edit_score,t_loss, t_f_scores[0], t_f_scores[1], t_f_scores[2], t_f_scores[3],\
+                    v_accuracy, v_edit_score,v_loss, v_f_scores[0], v_f_scores[1], v_f_scores[2], v_f_scores[3]]
+                df.to_csv(os.path.join(log_dir,'train_test_result.csv'))
         
 
 def test_model(model, test_dataset, loss_weights=None, plot_naming=None):
@@ -387,40 +405,72 @@ def cross_validate(dataset_name,net_name,model_index=0):
         # Dataset
         train_dir, test_dir,name = data['train'], data['test'],data['name']
         import fnmatch
-        if model_index=="5a":
+        if model_index==5:
             z=[dir  for dir in test_dir if fnmatch.fnmatch(dir,"*[Suturing,Needle_Passing,Knot_Tying]*")]
-            test_dir=z
-        if model_index=="5b":
+            test_dir_5a=z
             z=[dir  for dir in test_dir if fnmatch.fnmatch(dir,"*DESKpegtransfer*")]
-            test_dir=z
-        train_dataset = RawFeatureDataset(dataset_name, 
-                                        train_dir,
-                                        feature_type="sensor",
-                                        sample_rate=sample_rate,
-                                        sample_aug=False,
-                                        normalization=[None, None])
-        #breakpoint()
+            test_dir_5b=z
+            test_dir_model5 = [test_dir_5a,test_dir_5b]
+            train_dataset = RawFeatureDataset(dataset_name, 
+                                            train_dir,
+                                            feature_type="sensor",
+                                            sample_rate=sample_rate,
+                                            sample_aug=False,
+                                            normalization=[None, None])
+            test_norm = [train_dataset.get_means(), train_dataset.get_stds()]
+            test_dataset_5a = RawFeatureDataset(dataset_name, 
+                                            test_dir_model5[0],
+                                            feature_type="sensor",
+                                            sample_rate=sample_rate,
+                                            sample_aug=False,
+                                            normalization=test_norm)
+            test_dataset_5b = RawFeatureDataset(dataset_name, 
+                                            test_dir_model5[1],
+                                            feature_type="sensor",
+                                            sample_rate=sample_rate,
+                                            sample_aug=False,
+                                            normalization=test_norm)
+            loss_weights = utils.get_class_weights(train_dataset)
+            # make directories
+            path = os.getcwd()
+            trained_model_dir=  os.path.join(path,dataset_name,net_name,name) # contain name of the testing set
+            os.makedirs(trained_model_dir, exist_ok=True)
+            log_dir = os.path.join(trained_model_dir,'log')
+            checkpoint_dir = os.path.join(trained_model_dir,'checkpoints')
+            test_dataset = [test_dataset_5a,test_dataset_5b]
+            train_model(config,net_name,train_dataset,test_dataset,input_size, num_class,num_epochs,
+                    loss_weights=loss_weights, 
+                    trained_model_file=trained_model_dir, 
+                    log_dir=log_dir, checkpoint_dir=checkpoint_dir,model_index=5)
+        else:
+            train_dataset = RawFeatureDataset(dataset_name, 
+                                            train_dir,
+                                            feature_type="sensor",
+                                            sample_rate=sample_rate,
+                                            sample_aug=False,
+                                            normalization=[None, None])
+            #breakpoint()
 
-        test_norm = [train_dataset.get_means(), train_dataset.get_stds()]
-        test_dataset = RawFeatureDataset(dataset_name, 
-                                         test_dir,
-                                         feature_type="sensor",
-                                         sample_rate=sample_rate,
-                                         sample_aug=False,
-                                         normalization=test_norm)
+            test_norm = [train_dataset.get_means(), train_dataset.get_stds()]
+            test_dataset = RawFeatureDataset(dataset_name, 
+                                            test_dir,
+                                            feature_type="sensor",
+                                            sample_rate=sample_rate,
+                                            sample_aug=False,
+                                            normalization=test_norm)
 
-        loss_weights = utils.get_class_weights(train_dataset)
-        # make directories
-        path = os.getcwd()
-        trained_model_dir=  os.path.join(path,dataset_name,net_name,name) # contain name of the testing set
-        os.makedirs(trained_model_dir, exist_ok=True)
-        log_dir = os.path.join(trained_model_dir,'log')
-        checkpoint_dir = os.path.join(trained_model_dir,'checkpoints')
-        
-        train_model(config,net_name,train_dataset,test_dataset,input_size, num_class,num_epochs,
-                loss_weights=loss_weights, 
-                trained_model_file=trained_model_dir, 
-                log_dir=log_dir, checkpoint_dir=checkpoint_dir)
+            loss_weights = utils.get_class_weights(train_dataset)
+            # make directories
+            path = os.getcwd()
+            trained_model_dir=  os.path.join(path,dataset_name,net_name,name) # contain name of the testing set
+            os.makedirs(trained_model_dir, exist_ok=True)
+            log_dir = os.path.join(trained_model_dir,'log')
+            checkpoint_dir = os.path.join(trained_model_dir,'checkpoints')
+            
+            train_model(config,net_name,train_dataset,test_dataset,input_size, num_class,num_epochs,
+                    loss_weights=loss_weights, 
+                    trained_model_file=trained_model_dir, 
+                    log_dir=log_dir, checkpoint_dir=checkpoint_dir)
 
         #acc, edit, _, f_scores = test_model(model, test_dataset, 
                                          #   loss_weights=loss_weights)
