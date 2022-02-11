@@ -18,7 +18,7 @@ from config import (raw_feature_dir, sample_rate,
                     gesture_class_num, dataset_name)
 
 
-# for parameter tuning LSTM/TCN
+# for parameter tuning LSTM
 
 from config import input_size, num_class, raw_feature_dir, validation_trial, validation_trial_train, tcn_model_params 
 from utils import get_cross_val_splits
@@ -26,9 +26,9 @@ import ray
 from ray import tune
 from tcn_model import EncoderDecoderNet
 
-#config = { "hidden_size":tune.sample_from(lambda _: 2**np.random.randint(3,9)), "num_layers":tune.choice([1,2,3,4]),
-    #"learning_rate":tune.loguniform(1e-5,1e-2),
-       # "batch_size":1, "weight_decay": tune.loguniform(1e-3,1e-1)}
+config = { "hidden_size":tune.sample_from(lambda _: 2**np.random.randint(3,9)), "num_layers":tune.choice([1,2,3,4]),
+    "learning_rate":tune.loguniform(1e-5,1e-2),
+        "batch_size":1, "weight_decay": tune.loguniform(1e-3,1e-1)}
 def train_model_parameter( config, type,input_size, num_class,num_epochs,dataset_name,sample_rate,
                 loss_weights=None, 
                 trained_model_file=None, 
@@ -355,21 +355,27 @@ def test_model(model, test_dataset, loss_weights=None, plot_naming=None):
 
 ######################### Main Process #########################
 
-def cross_validate(dataset_name,net_name):
+def cross_validate(dataset_name,net_name,model_index=0):
     '''
 
     '''
-    if net_name =='tcn':
-        num_epochs = 30 # about 25 mins for 5 fold cross validation
-        config = {'learning_rate': 0.0003042861945575232, 'batch_size': 1, 'weight_decay': 0.00012035748692105724} #EPOCH=30 tcn
-    if net_name=='lstm':
-        num_epochs = 60
-        config =  {'hidden_size': 128 , 'learning_rate': 0.000145129 ,  'num_layers': 3 ,'batch_size': 1, 'weight_decay':0.00106176 } # Epoch =60 lstm
+    if net_name =='tcn'and dataset_name=="JIGSAWS":
+        num_epochs = 50 # about 25 mins for 5 fold cross validation
+        config= {'learning_rate': 0.0007358358290370388, 'batch_size': 1, 'weight_decay': 0.0002967511175393983} # for orientation
+       # for velocity config = {'learning_rate': 0.00027347155281573553, 'batch_size': 1, 'weight_decay': 0.00037328332914909917} #EPOCH=30 tcn
+    # if net_name=='lstm':
+    #     num_epochs = 60
+    #     config =  {'hidden_size': 128 , 'learning_rate': 0.000145129 ,  'num_layers': 3 ,'batch_size': 1, 'weight_decay':0.00106176 } # Epoch =60 lstm
     
+    if net_name=='tcn' and dataset_name=="DESKpegtransfer":
+        num_epochs = 100
+        config=  {'learning_rate': 0.0007098462302555751, 'batch_size': 1, 'weight_decay': 0.0007278759551827732}
+     
     
     
     # Get trial splits
     cross_val_splits = utils.get_cross_val_splits()
+    
     #breakpoint()
 
     # Cross-Validation Result
@@ -380,6 +386,13 @@ def cross_validate(dataset_name,net_name):
         #breakpoint()
         # Dataset
         train_dir, test_dir,name = data['train'], data['test'],data['name']
+        import fnmatch
+        if model_index=="5a":
+            z=[dir  for dir in test_dir if fnmatch.fnmatch(dir,"*[Suturing,Needle_Passing,Knot_Tying]*")]
+            test_dir=z
+        if model_index=="5b":
+            z=[dir  for dir in test_dir if fnmatch.fnmatch(dir,"*DESKpegtransfer*")]
+            test_dir=z
         train_dataset = RawFeatureDataset(dataset_name, 
                                         train_dir,
                                         feature_type="sensor",
